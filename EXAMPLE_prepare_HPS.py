@@ -60,3 +60,57 @@ trace.detrend(type='linear') # remove trend
 ff_value_signal, ff_amplitude_signal, ff_value_NOsignal, ff_amplitude_NOsignal, specgram, specgram_time_vec ,specgram_freq_vec,trace_data_one_day,trace_data_one_day_time_line =pitch_detection(trace,nfft,threshold_HSI,nr_downsamp_HPS)
 
 
+## save arrays to csv
+
+np.savetxt("ff_values_sig.csv", ff_value_signal, delimiter=";") # save the detected fundamental frequency values classified as signal
+np.savetxt("ff_values_nosig.csv", ff_value_NOsignal, delimiter=";") # save the detected fundamental frequency values classified as no signal
+np.savetxt("spectrogram.csv", specgram, delimiter=";") # save the spectrogram
+
+
+
+## for plotting 
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
+vc_time_domain = np.linspace(0,24,np.shape(trace_data_one_day_time_line)[0])
+vc_time_spec = np.linspace(0,24,np.shape(specgram)[1])
+
+gridsize = (1, 1)
+
+fig = plt.figure(figsize=(18, 9))
+fig.subplots_adjust(hspace=0, wspace=0)
+plt.rcParams.update({'font.size': 18})
+plt.set_cmap('inferno')
+## v_component
+
+ax1 = plt.subplot2grid(gridsize, (0, 0), colspan=7, rowspan=2)
+
+
+im = ax1.pcolormesh(vc_time_spec,specgram_freq_vec,10*np.log10(specgram),vmin=-40,vmax=-340)
+ax1.plot(vc_time_spec,ff_value_signal,'.',markersize= 3.0, color='navy',label='harmonic tremor')
+ax1.plot(vc_time_spec,ff_value_NOsignal,'.',markersize= 3.0, color='forestgreen', label='rejected detection')
+ax1.set_xlabel('Time [h]')
+ax1.set_xticks([3,6,9,12,15,18,21]) 
+ax1.set_ylabel('Frequency [Hz]')
+ax1.legend(facecolor='white',markerscale=3)
+
+
+
+axins = inset_axes(ax1,
+                   width="5%",  # width = 5% of parent_bbox width
+                   height="100%",  # height : 50%
+                   loc='lower left',
+                   bbox_to_anchor=(1.05, 0., 1, 1),
+                   bbox_transform=ax1.transAxes,
+                   borderpad=0,
+                   )
+fig.colorbar(im, cax=axins,label='Amplitude [dB]')
+
+plt.savefig(path_project+'test.jpeg', dpi=100, facecolor='w', edgecolor='w',
+        orientation='portrait', format=None,
+        transparent=False, bbox_inches='tight',pad_inches=0.04)
+plt.clf()
+
+
+
