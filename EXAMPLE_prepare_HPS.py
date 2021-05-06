@@ -1,17 +1,15 @@
 import numpy as np
 import obspy, os, gc, re
 import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-plt.rcParams['image.cmap'] = 'inferno'
-plt.rcParams['agg.path.chunksize'] = 10000
+# matplotlib.use('Agg')
+
 from obspy import read, read_inventory
 
 from obspy.imaging.spectrogram import _nearest_pow_2
 from scipy import signal
 from matplotlib import mlab, transforms
 
-from funda_detection import pitch_detection
+from func import hps_algo, pitch_detection
 
 ## set paths
 
@@ -59,6 +57,6 @@ trace.detrend(type='linear') # remove trend
 
 
     
-ff_value_signal, ff_amplitude_signal, ff_value_NOsignal, ff_amplitude_NOsignal, specgram, specgram_time_vec ,specgram_freq_vec,trace_data_one_day,trace_data_one_day_time_line =pitch_detection.pitch_detection(trace,nfft,threshold_HSI,nr_downsamp_HPS)
+ff_value_signal, ff_amplitude_signal, ff_value_NOsignal, ff_amplitude_NOsignal, specgram, specgram_time_vec ,specgram_freq_vec,trace_data_one_day,trace_data_one_day_time_line =pitch_detection(trace,nfft,threshold_HSI,nr_downsamp_HPS)
 
 
